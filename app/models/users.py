@@ -25,8 +25,7 @@ class User(Base):
 # sharing projects
     project_memberships: Mapped[list["ProjectMember"]] = relationship(
         "ProjectMember",
-        back_populates="user",
-        foreign_keys="ProjectMember.user_id"
+        back_populates="user"
     )
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, username={self.username!r}, email={self.email!r})"
