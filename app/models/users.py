@@ -23,8 +23,8 @@ class User(Base):
         cascade="all, delete-orphan"
     )
 # sharing projects
-    project_memberships: Mapped[list["ProjectMember"]] = relationship(
-        "ProjectMember",
+    project_memberships: Mapped[list["ProjectUser"]] = relationship(
+        "ProjectUser",
         back_populates="user"
     )
     def __repr__(self) -> str:
