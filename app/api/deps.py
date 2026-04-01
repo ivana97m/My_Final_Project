@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.exceptions import UnauthorizedException
 from app.core.security import decode_access_token
 from app.db.session import get_db
-from app.models.user import User
+from app.models.users import User
 from app.services.auth_service import auth_service
 
 
@@ -23,7 +23,9 @@ async def get_current_user (
 
     user_id = int(payload["sub"])
     user = await auth_service.get_user_by_id(db, user_id)
+    if not user:
+        raise UnauthorizedException("User not found")
     return user
 
-CurrentUser=Annotated[User,Depends(get_current_user)]
-DB=Annotated[AsyncSession,Depends(get_db)]
+CurrentUser = Annotated[User,Depends(get_current_user)]
+DB = Annotated[AsyncSession,Depends(get_db)]

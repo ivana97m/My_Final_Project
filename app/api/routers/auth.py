@@ -8,7 +8,7 @@ router = APIRouter(tags=["auth"])
 
 @router.post("/register", response_model=UserResponse,status_code=201, summary="Register new user")
 async def register (data: UserRegisterRequest, db: DB) -> UserResponse:
-    user = await auth_service.register(data, db)
+    user = await auth_service.register(db, data)
     return UserResponse.model_validate(user)
 
 @router.post("/login", response_model=TokenResponse, status_code=200, summary="Log In")

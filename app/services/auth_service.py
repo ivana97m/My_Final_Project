@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.exceptions import ConflictException, UnauthorizedException
-from app.core.security import create_access_token, hash_password, verify_password
-from app.models.user import User
+from app.core.security import create_access_token, hashed_password, verify_password
+from app.models.users import User
 from app.schemas.user import TokenResponse, UserRegisterRequest, UserLoginRequest
 
 
@@ -17,7 +17,7 @@ class AuthService:
         user = User(
             username=data.username,
             email=data.email,
-            hashed_password=hash_password(data.password)
+            hashed_password=hashed_password(data.password)
         )
         db.add(user)
         await db.flush()

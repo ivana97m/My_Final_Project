@@ -17,4 +17,7 @@ class ProjectInfoResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+class ProjectFullResponse(ProjectInfoResponse):
+    documents: list[DocumentResponse] = []
+
     model_config = {"from_attributes": True}
