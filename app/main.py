@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.api.routers.auth import router as auth_router
+from app.api.routers.projects import router as project_router
 from app.db.session import init_db
 app = FastAPI()
 
@@ -15,3 +16,4 @@ def health():
 
 
 app.include_router(auth_router)
+app.include_router(project_router)
