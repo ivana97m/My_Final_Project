@@ -14,6 +14,8 @@ class ProjectService:
         project = Project(name=data.name, description=data.description, owner_id=owner.id)
         db.add(project)
         await db.flush()
+        membership = ProjectUser(project_id=project.id, user_id=owner.id)
+        db.add(membership)
         await db.refresh(project)
         return project
     async def get_accessible_projects(self, db: AsyncSession, user: User) -> list[Project]:
