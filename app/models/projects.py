@@ -22,7 +22,7 @@ class Project(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    owner = Mapped["User"] = relationship(
+    owner: Mapped["User"] = relationship(
         "User",
         back_populates="owned_projects",
         cascade="all, delete")
@@ -32,7 +32,7 @@ class Project(Base):
         back_populates="project",
         cascade="all, delete-orphan")
 
-    documents = Mapped[list["Document"]] = relationship(
+    documents: Mapped[list["Document"]] = relationship(
         "Document",
         back_populates="project",
         cascade="all, delete-orphan"

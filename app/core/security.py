@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, UTC
 from typing import Any
-
+from app.core.exceptions import UnauthorizedException
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
@@ -25,4 +25,4 @@ def decode_access_token(token: str) -> Any:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         return payload
     except JWTError:
-        return None
+        raise UnauthorizedException("Invalid or expired token")
