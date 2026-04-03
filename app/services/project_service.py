@@ -4,8 +4,6 @@ from app.models.projects import Project
 from app.models.project_user import ProjectUser
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
-
 
 
 
@@ -23,7 +21,6 @@ class ProjectService:
             select(Project)
             .join(ProjectUser, ProjectUser.project_id == Project.id)
             .where(ProjectUser.user_id == user.id)
-            .options(selectinload(Project.documents))
             .order_by(Project.created_at.desc())
         )
         return list(result.scalars().all())

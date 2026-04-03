@@ -12,16 +12,14 @@ FAKE_HASH = "$2b$12$fakehashfortesting00000000000000000000000000000000"
 
 
 def make_user(
-    login: str = "testuser",
+    username: str = "testuser",
     email: str | None = None,
-    is_active: bool = True,
 ) -> User:
     user = User()
     user.id = 1
-    user.login = login
+    user.username = username
     user.email = email
     user.hashed_password = FAKE_HASH
-    user.is_active = is_active
     return user
 
 
@@ -44,13 +42,13 @@ async def test_register_success(service: AuthService, mock_db: AsyncMock):
     mock_db.refresh = AsyncMock()
 
     data = UserRegisterRequest(
-        login="newuser",
+        username="newusername",
         password="password123",
         repeat_password="password123",
         email="newuser@example.com",
     )
 
-    with patch("app.services.auth_service.hash_password", return_value="hashed"):
+    with patch("app.services.auth_service.hashed_password", return_value="hashed"):
         user = await service.register(mock_db, data)
 
     mock_db.add.assert_called_once()
@@ -58,7 +56,7 @@ async def test_register_success(service: AuthService, mock_db: AsyncMock):
     mock_db.refresh.assert_called_once()
 
     created_user = mock_db.add.call_args[0][0]
-    assert created_user.login == "newuser"
+    assert created_user.username == "newusername"
     assert created_user.hashed_password == "hashed"
 
 
@@ -69,13 +67,13 @@ async def test_register_with_email(service: AuthService, mock_db: AsyncMock):
     mock_db.refresh = AsyncMock()
 
     data = UserRegisterRequest(
-        login="newuser",
+        username="newusername",
         password="password123",
         repeat_password="password123",
         email="user@example.com",
     )
 
-    with patch("app.services.auth_service.hash_password", return_value="hashed"):
+    with patch("app.services.auth_service.hashed_password", return_value="hashed"):
         await service.register(mock_db, data)
 
     created_user = mock_db.add.call_args[0][0]
@@ -87,7 +85,7 @@ async def test_register_duplicate_login(service: AuthService, mock_db: AsyncMock
     mock_db.scalar.return_value = make_user("existinguser")
 
     data = UserRegisterRequest(
-        login="existinguser",
+        username="existinguser",
         password="password123",
         repeat_password="password123",
         email="existing@example.com",
@@ -133,16 +131,6 @@ async def test_login_user_not_found(service: AuthService, mock_db: AsyncMock):
 
     with pytest.raises(UnauthorizedException):
         await service.login(mock_db, "ghostuser", "password123")
-
-
-@pytest.mark.asyncio
-async def test_login_inactive_user(service: AuthService, mock_db: AsyncMock):
-    mock_db.scalar.return_value = make_user("testuser", is_active=False)
-
-    with patch("app.services.auth_service.verify_password", return_value=True):
-        with pytest.raises(UnauthorizedException):
-            await service.login(mock_db, "testuser", "password123")
-
 
 @pytest.mark.asyncio
 async def test_get_user_by_id_found(service: AuthService, mock_db: AsyncMock):

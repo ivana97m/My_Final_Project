@@ -24,6 +24,4 @@ class ProjectUser(Base):
     user: Mapped["User"] = relationship(
         "User",
         back_populates="project_memberships",
-        foreign_keys="User.id"
-
     )

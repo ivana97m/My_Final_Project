@@ -1,5 +1,6 @@
+import pytest
 from app.core.security import hashed_password, verify_password, create_access_token, decode_access_token
-
+from app.core.exceptions import UnauthorizedException
 
 def test_password_hashing():
     hashed = hashed_password("mysecret")
@@ -15,7 +16,6 @@ def test_jwt_encode_decode():
     assert payload["sub"] == "42"
     assert payload["login"] == "alice"
 
-
 def test_invalid_token():
-    result = decode_access_token("not.a.token")
-    assert result is None
+    with pytest.raises(UnauthorizedException):
+        decode_access_token("not.a.token")

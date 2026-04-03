@@ -22,5 +22,3 @@ async def list_projects(db: DB, current_user: CurrentUser) -> list[ProjectInfoRe
     projects = await project_service.get_accessible_projects(db, current_user)
     return [ProjectInfoResponse.model_validate(p) for p in projects]
 
-
-
